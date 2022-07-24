@@ -1,4 +1,4 @@
-package lm_testing
+package lmTesting
 
 import (
 	"encoding/json"

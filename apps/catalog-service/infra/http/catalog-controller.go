@@ -1,4 +1,4 @@
-package http_controller
+package httpController
 
 import (
 	"encoding/json"
@@ -9,21 +9,21 @@ import (
 )
 
 var (
-	JsonContentType = "application/json"
+	JSONContentType = "application/json"
 )
 
 type AddMowerInputDTO struct {
 	Name string
 }
 
-type CatalogHttpServer struct {
+type CatalogHTTPServer struct {
 	http.Handler
 	repo    domain.CatalogRepository
 	service usecase.CatalogService
 }
 
-func NewCatalogHttpServer(repo domain.CatalogRepository) (*CatalogHttpServer, error) {
-	s := new(CatalogHttpServer)
+func NewCatalogHTTPServer(repo domain.CatalogRepository) (*CatalogHTTPServer, error) {
+	s := new(CatalogHTTPServer)
 
 	s.repo = repo
 	s.service = usecase.NewCatalogService(repo)
@@ -38,8 +38,8 @@ func NewCatalogHttpServer(repo domain.CatalogRepository) (*CatalogHttpServer, er
 	return s, nil
 }
 
-func (serv *CatalogHttpServer) CreateMower(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("content-type", JsonContentType)
+func (serv *CatalogHTTPServer) CreateMower(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-type", JSONContentType)
 
 	mowerToCreate := &AddMowerInputDTO{}
 
@@ -67,8 +67,8 @@ func (serv *CatalogHttpServer) CreateMower(w http.ResponseWriter, r *http.Reques
 	}
 }
 
-func (serv *CatalogHttpServer) FindMower(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("content-type", JsonContentType)
+func (serv *CatalogHTTPServer) FindMower(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("content-type", JSONContentType)
 
 	id := strings.TrimPrefix(r.URL.Path, "/mowers/")
 
@@ -87,8 +87,8 @@ func (serv *CatalogHttpServer) FindMower(w http.ResponseWriter, r *http.Request)
 	}
 }
 
-func (serv *CatalogHttpServer) GetCatalog(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("content-type", JsonContentType)
+func (serv *CatalogHTTPServer) GetCatalog(w http.ResponseWriter, _ *http.Request) {
+	w.Header().Set("content-type", JSONContentType)
 
 	mowers, err := serv.service.FindAll()
 

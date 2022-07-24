@@ -1,4 +1,4 @@
-package http_controller
+package httpController
 
 import (
 	"bytes"
@@ -8,7 +8,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	lm_testing "jrobic/lawn-mower/catalog-service"
+	lmTesting "jrobic/lawn-mower/catalog-service"
 	"jrobic/lawn-mower/catalog-service/domain"
 )
 
@@ -20,8 +20,8 @@ func TestCreateMowerCtrl(t *testing.T) {
 			{Id: "2", Name: "M-150"},
 			{Id: "3", Name: "M-480"},
 		}
-		repo := &lm_testing.StubCatalogRepository{Mowers: wantedCatalog}
-		server, _ := NewCatalogHttpServer(repo)
+		repo := &lmTesting.StubCatalogRepository{Mowers: wantedCatalog}
+		server, _ := NewCatalogHTTPServer(repo)
 
 		mower := &AddMowerInputDTO{Name: "M-600"}
 		wantedMower := domain.Mower{Name: "M-600", Id: "4"}
@@ -31,12 +31,12 @@ func TestCreateMowerCtrl(t *testing.T) {
 
 		server.ServeHTTP(response, request)
 
-		got := lm_testing.GetMowerFromResponse(t, response.Body)
+		got := lmTesting.GetMowerFromResponse(t, response.Body)
 
-		lm_testing.AssertStatus(t, response.Code, http.StatusAccepted)
-		lm_testing.AssertContentType(t, response, JsonContentType)
+		lmTesting.AssertStatus(t, response.Code, http.StatusAccepted)
+		lmTesting.AssertContentType(t, response, JSONContentType)
 
-		lm_testing.AssertMowerEquals(t, got, wantedMower)
+		lmTesting.AssertMowerEquals(t, got, wantedMower)
 	})
 }
 
@@ -47,8 +47,8 @@ func TestFindMowerCtrl(t *testing.T) {
 		{Id: "3", Name: "M-480"},
 	}
 
-	repo := &lm_testing.StubCatalogRepository{Mowers: wantedCatalog}
-	server, _ := NewCatalogHttpServer(repo)
+	repo := &lmTesting.StubCatalogRepository{Mowers: wantedCatalog}
+	server, _ := NewCatalogHTTPServer(repo)
 
 	t.Run("FindMowerCtrl return M-350 mower", func(t *testing.T) {
 		request := NewFindAddMowerRequest("1")
@@ -56,13 +56,13 @@ func TestFindMowerCtrl(t *testing.T) {
 
 		server.ServeHTTP(response, request)
 
-		got := lm_testing.GetMowerFromResponse(t, response.Body)
+		got := lmTesting.GetMowerFromResponse(t, response.Body)
 		wantedMower := domain.Mower{Id: "1", Name: "M-90"}
 
-		lm_testing.AssertStatus(t, response.Code, http.StatusOK)
-		lm_testing.AssertContentType(t, response, JsonContentType)
+		lmTesting.AssertStatus(t, response.Code, http.StatusOK)
+		lmTesting.AssertContentType(t, response, JSONContentType)
 
-		lm_testing.AssertMowerEquals(t, got, wantedMower)
+		lmTesting.AssertMowerEquals(t, got, wantedMower)
 	})
 
 	t.Run("FindMowerCtrl return M-150 mower", func(t *testing.T) {
@@ -71,13 +71,13 @@ func TestFindMowerCtrl(t *testing.T) {
 
 		server.ServeHTTP(response, request)
 
-		got := lm_testing.GetMowerFromResponse(t, response.Body)
+		got := lmTesting.GetMowerFromResponse(t, response.Body)
 		wantedMower := domain.Mower{Id: "2", Name: "M-150"}
 
-		lm_testing.AssertStatus(t, response.Code, http.StatusOK)
-		lm_testing.AssertContentType(t, response, JsonContentType)
+		lmTesting.AssertStatus(t, response.Code, http.StatusOK)
+		lmTesting.AssertContentType(t, response, JSONContentType)
 
-		lm_testing.AssertMowerEquals(t, got, wantedMower)
+		lmTesting.AssertMowerEquals(t, got, wantedMower)
 	})
 
 	t.Run("FindMowerCtrl return 404 on missing mower", func(t *testing.T) {
@@ -86,7 +86,7 @@ func TestFindMowerCtrl(t *testing.T) {
 
 		server.ServeHTTP(response, request)
 
-		lm_testing.AssertStatus(t, response.Code, http.StatusNotFound)
+		lmTesting.AssertStatus(t, response.Code, http.StatusNotFound)
 	})
 }
 
@@ -97,8 +97,8 @@ func TestGetCatalogCtrl(t *testing.T) {
 		{Id: "3", Name: "M-480"},
 	}
 
-	repo := &lm_testing.StubCatalogRepository{Mowers: wantedCatalog}
-	server, _ := NewCatalogHttpServer(repo)
+	repo := &lmTesting.StubCatalogRepository{Mowers: wantedCatalog}
+	server, _ := NewCatalogHTTPServer(repo)
 
 	t.Run("GetCatalogCtrl return list of mowers", func(t *testing.T) {
 		request := NewGetCatalogRequest()
@@ -106,11 +106,11 @@ func TestGetCatalogCtrl(t *testing.T) {
 
 		server.ServeHTTP(response, request)
 
-		got := lm_testing.GetCatalogFromResponse(t, response.Body)
+		got := lmTesting.GetCatalogFromResponse(t, response.Body)
 
-		lm_testing.AssertCatalogEquals(t, got, wantedCatalog)
-		lm_testing.AssertStatus(t, response.Code, http.StatusOK)
-		lm_testing.AssertContentType(t, response, JsonContentType)
+		lmTesting.AssertCatalogEquals(t, got, wantedCatalog)
+		lmTesting.AssertStatus(t, response.Code, http.StatusOK)
+		lmTesting.AssertContentType(t, response, JSONContentType)
 	})
 }
 

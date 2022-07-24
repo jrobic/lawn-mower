@@ -1,8 +1,8 @@
-package http_controller
+package httpController
 
 import (
 	"fmt"
-	lm_testing "jrobic/lawn-mower/catalog-service"
+	lmTesting "jrobic/lawn-mower/catalog-service"
 	"jrobic/lawn-mower/catalog-service/domain"
 	"jrobic/lawn-mower/catalog-service/infra/repository"
 	"net/http"
@@ -12,7 +12,7 @@ import (
 
 func TestAddMowersAndRetrievingThemes(t *testing.T) {
 	repo := repository.NewInMemoryRepo([]*domain.Mower{})
-	server, _ := NewCatalogHttpServer(repo)
+	server, _ := NewCatalogHTTPServer(repo)
 
 	wantedMowers := []*domain.Mower{
 		{Id: "1", Name: "M-90"},
@@ -31,10 +31,10 @@ func TestAddMowersAndRetrievingThemes(t *testing.T) {
 			response := httptest.NewRecorder()
 
 			server.ServeHTTP(response, NewFindAddMowerRequest(wantedMower.Id))
-			got := lm_testing.GetMowerFromResponse(t, response.Body)
+			got := lmTesting.GetMowerFromResponse(t, response.Body)
 
-			lm_testing.AssertStatus(t, response.Code, http.StatusOK)
-			lm_testing.AssertMowerEquals(t, got, *wantedMower)
+			lmTesting.AssertStatus(t, response.Code, http.StatusOK)
+			lmTesting.AssertMowerEquals(t, got, *wantedMower)
 		})
 	}
 
@@ -42,17 +42,17 @@ func TestAddMowersAndRetrievingThemes(t *testing.T) {
 		response := httptest.NewRecorder()
 		server.ServeHTTP(response, NewGetCatalogRequest())
 
-		got := lm_testing.GetCatalogFromResponse(t, response.Body)
+		got := lmTesting.GetCatalogFromResponse(t, response.Body)
 
-		lm_testing.AssertCatalogEquals(t, got, wantedMowers)
-		lm_testing.AssertStatus(t, response.Code, http.StatusOK)
-		lm_testing.AssertContentType(t, response, JsonContentType)
+		lmTesting.AssertCatalogEquals(t, got, wantedMowers)
+		lmTesting.AssertStatus(t, response.Code, http.StatusOK)
+		lmTesting.AssertContentType(t, response, JSONContentType)
 	})
 }
 
 func BenchmarkAddMower(b *testing.B) {
 	repo := repository.NewInMemoryRepo([]*domain.Mower{})
-	server, _ := NewCatalogHttpServer(repo)
+	server, _ := NewCatalogHTTPServer(repo)
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
@@ -73,7 +73,7 @@ func BenchmarkFindMower(b *testing.B) {
 	}
 
 	repo := repository.NewInMemoryRepo(mowers)
-	server, _ := NewCatalogHttpServer(repo)
+	server, _ := NewCatalogHTTPServer(repo)
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
@@ -93,7 +93,7 @@ func BenchmarkGetCatalog(b *testing.B) {
 	}
 
 	repo := repository.NewInMemoryRepo(mowers)
-	server, _ := NewCatalogHttpServer(repo)
+	server, _ := NewCatalogHTTPServer(repo)
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {

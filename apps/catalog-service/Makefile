@@ -7,7 +7,7 @@ all: $(MODULE)
 $(MODULE):
 	@go build -v -o $(BASE)/bin/$@
 
-.PHONY: test coverage
+.PHONY: test coverage lint
 test-all:
 	@go test -v ./...
 
@@ -18,6 +18,9 @@ coverage:
 coverage-ci:
 	CVPKG=$(go list ./... | grep -v mocks | tr '\n' ',')
 	@go test -coverpkg=${CVPKG} -coverprofile=coverage.out -covermode=count  ./...
+
+lint:
+	@revive -config ../../revive.toml --formatter friendly
 
 .PHONY: clean list
 clean:

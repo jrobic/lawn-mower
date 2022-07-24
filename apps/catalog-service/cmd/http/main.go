@@ -2,7 +2,7 @@ package main
 
 import (
 	"jrobic/lawn-mower/catalog-service/domain"
-	http_controller "jrobic/lawn-mower/catalog-service/infra/http"
+	httpController "jrobic/lawn-mower/catalog-service/infra/http"
 	"jrobic/lawn-mower/catalog-service/infra/repository"
 	"log"
 	"net/http"
@@ -15,7 +15,7 @@ func main() {
 		{Id: "3", Name: "M-480"},
 	})
 
-	server, err := http_controller.NewCatalogHttpServer(repo)
+	server, err := httpController.NewCatalogHTTPServer(repo)
 
 	if err != nil {
 		log.Fatalf("problem creating player server %v", err)
