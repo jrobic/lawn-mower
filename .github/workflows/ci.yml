@@ -22,6 +22,14 @@ on:
   workflow_dispatch:
 
 jobs:
+  cancel:
+    name: "Cancel Previous Runs"
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    if: github.ref_name != 'develop' && github.ref_name != 'main'
+    steps:
+      - uses: styfle/cancel-workflow-action@0.10.0
+
   catalog-service-test:
     name: Lint And Test Catalog Service (Golang)
     runs-on: ubuntu-latest
@@ -59,12 +67,3 @@ jobs:
           api-token: ${{ secrets.CODACY_API_TOKEN }}
           coverage-reports: apps/catalog-service/coverage.lcov
           language: Go
-
-      # - name: Publish Code Coverage
-      #   uses: codecov/codecov-action@v3
-      #   with:
-      #     token: ${{ secrets.CODECOV_TOKEN }}
-      #     files: ./apps/catalog-service/coverage.out
-      #     flags: catalog-service,golang
-      #     name: catalog-service
-      #     verbose: true

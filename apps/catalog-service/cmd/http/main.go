@@ -10,9 +10,9 @@ import (
 
 func main() {
 	repo := repository.NewInMemoryRepo([]*domain.Mower{
-		{Id: "1", Name: "M-90"},
-		{Id: "2", Name: "M-150"},
-		{Id: "3", Name: "M-480"},
+		{ID: "1", Name: "M-90"},
+		{ID: "2", Name: "M-150"},
+		{ID: "3", Name: "M-480"},
 	})
 
 	server, err := httpController.NewCatalogHTTPServer(repo)

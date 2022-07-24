@@ -5,9 +5,10 @@ import (
 )
 
 type CatalogService interface {
-	Add(input domain.AddMowerDTO) (*domain.Mower, error)
-	Find(id string) (*domain.Mower, error)
-	FindAll() ([]*domain.Mower, error)
+	CreateMower(input domain.CreateMowerDTO) (*domain.Mower, error)
+	UpdateMower(id string, input domain.UpdateMowerDTO) (*domain.Mower, error)
+	GetMower(id string) (*domain.Mower, error)
+	GetAvailableMowers() ([]*domain.Mower, error)
 }
 
 type LMCatalogService struct {

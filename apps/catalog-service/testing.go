@@ -16,18 +16,18 @@ type StubCatalogRepository struct {
 
 func (r *StubCatalogRepository) Find(id string) (*domain.Mower, error) {
 	for i, mower := range r.Mowers {
-		if mower.Id == id {
+		if mower.ID == id {
 			return r.Mowers[i], nil
 		}
 	}
 	return nil, nil
 }
 
-func (r *StubCatalogRepository) Add(input domain.AddMowerDTO) (*domain.Mower, error) {
+func (r *StubCatalogRepository) Add(input domain.CreateMowerDTO) (*domain.Mower, error) {
 	id := fmt.Sprint(len(r.Mowers) + 1)
 
 	mower := &domain.Mower{
-		Id:   id,
+		ID:   id,
 		Name: input.Name,
 	}
 
@@ -36,7 +36,19 @@ func (r *StubCatalogRepository) Add(input domain.AddMowerDTO) (*domain.Mower, er
 	return mower, nil
 }
 
-func (r *StubCatalogRepository) FindAll() ([]*domain.Mower, error) {
+func (r *StubCatalogRepository) Patch(id string, input domain.UpdateMowerDTO) (mower *domain.Mower, err error) {
+	for i, mower := range r.Mowers {
+		if mower.ID == id {
+			r.Mowers[i].Name = input.Name
+			mower = r.Mowers[i]
+			return mower, err
+		}
+	}
+
+	return mower, err
+}
+
+func (r *StubCatalogRepository) FindAvailableMowers() ([]*domain.Mower, error) {
 	return r.Mowers, nil
 }
 

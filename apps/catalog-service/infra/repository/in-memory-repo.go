@@ -19,14 +19,14 @@ func NewInMemoryRepo(initialMowers []*domain.Mower) *InMemoryRepo {
 	return &InMemoryRepo{Mowers: mowers}
 }
 
-func (r *InMemoryRepo) Add(input domain.AddMowerDTO) (*domain.Mower, error) {
+func (r *InMemoryRepo) Add(input domain.CreateMowerDTO) (*domain.Mower, error) {
 	r.lock.Lock()
 	defer r.lock.Unlock()
 
 	id := fmt.Sprint(len(r.Mowers) + 1)
 
 	mower := &domain.Mower{
-		Id:   id,
+		ID:   id,
 		Name: input.Name,
 	}
 
@@ -35,19 +35,34 @@ func (r *InMemoryRepo) Add(input domain.AddMowerDTO) (*domain.Mower, error) {
 	return mower, nil
 }
 
+func (r *InMemoryRepo) Patch(id string, input domain.UpdateMowerDTO) (mower *domain.Mower, err error) {
+	r.lock.Lock()
+	defer r.lock.Unlock()
+
+	for i, mower := range r.Mowers {
+		if mower.ID == id {
+			r.Mowers[i].Name = input.Name
+			mower = r.Mowers[i]
+			return mower, err
+		}
+	}
+
+	return mower, err
+}
+
 func (r *InMemoryRepo) Find(id string) (mower *domain.Mower, err error) {
 	r.lock.Lock()
 	defer r.lock.Unlock()
 
 	for i, mower := range r.Mowers {
-		if mower.Id == id {
+		if mower.ID == id {
 			return r.Mowers[i], nil
 		}
 	}
 	return nil, nil
 }
 
-func (r *InMemoryRepo) FindAll() (mowers []*domain.Mower, err error) {
+func (r *InMemoryRepo) FindAvailableMowers() (mowers []*domain.Mower, err error) {
 	r.lock.Lock()
 	defer r.lock.Unlock()
 

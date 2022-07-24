@@ -6,6 +6,7 @@
 
 - `CreateMower`: create a new Mower
 - `UpdateMower`: update a Mower
+- `GetMower`: get a Mower
 - `GetAvailableMowers`: get all Mowers
 
 `Store`: a store provides mowers to customers
