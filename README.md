@@ -1,5 +1,7 @@
 # Lawn Mower
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/1e409c5ff2a340259be2b10e5da88a66)](https://app.codacy.com/gh/jrobic/lawn-mower?utm_source=github.com&utm_medium=referral&utm_content=jrobic/lawn-mower&utm_campaign=Badge_Grade_Settings)
+
 Monorepo Go, React, Typescript. Learn Golang Microservices and other stuff
 🌀 This repository is a work in progress and will be completed over time 🚀
 
