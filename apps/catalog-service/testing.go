@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"io"
 	"jrobic/lawn-mower/catalog-service/domain"
-	"net/http/httptest"
+	"net/http"
 	"reflect"
 	"testing"
 )
@@ -95,10 +95,10 @@ func AssertStatus(t testing.TB, got, want int) {
 	}
 }
 
-func AssertContentType(t testing.TB, response *httptest.ResponseRecorder, want string) {
+func AssertContentType(t testing.TB, response *http.Response, want string) {
 	t.Helper()
-	if response.Result().Header.Get("content-type") != want {
-		t.Errorf("response did not have content-type of %s, got %v", want, response.Result().Header)
+	if response.Header.Get("content-type") != want {
+		t.Errorf("response did not have content-type of %s, got %v", want, response.Header)
 	}
 }
 
