@@ -1,4 +1,4 @@
-package httpController
+package restcontroller
 
 import (
 	"fmt"
@@ -6,7 +6,6 @@ import (
 	"jrobic/lawn-mower/catalog-service/domain"
 	"jrobic/lawn-mower/catalog-service/infra/repository"
 	"net/http"
-	"net/http/httptest"
 	"testing"
 )
 
@@ -21,31 +20,30 @@ func TestCreateMowersAndRetrievingThemes(t *testing.T) {
 	}
 
 	for _, wantedMower := range wantedMowers {
-		server.ServeHTTP(httptest.NewRecorder(), NewCreateMowerRequest(&CreateMowerInputDTO{Name: wantedMower.Name}))
+		server.App.Test(NewCreateMowerRequest(&CreateMowerInputDTO{Name: wantedMower.Name}), -1)
 	}
 
 	for _, wantedMower := range wantedMowers {
 		testCaseName := "get " + wantedMower.Name + " mower"
 
 		t.Run(testCaseName, func(t *testing.T) {
-			response := httptest.NewRecorder()
+			response, _ := server.App.Test(NewGetMowerRequest(wantedMower.ID), -1)
 
-			server.ServeHTTP(response, NewGetMowerRequest(wantedMower.ID))
 			got := lmTesting.GetMowerFromResponse(t, response.Body)
 
-			lmTesting.AssertStatus(t, response.Code, http.StatusOK)
+			lmTesting.AssertStatus(t, response.StatusCode, http.StatusOK)
 			lmTesting.AssertMowerEquals(t, got, *wantedMower)
 		})
 	}
 
 	t.Run("get list mowers", func(t *testing.T) {
-		response := httptest.NewRecorder()
-		server.ServeHTTP(response, NewGetCatalogRequest())
+
+		response, _ := server.App.Test(NewGetCatalogRequest(), -1)
 
 		got := lmTesting.GetCatalogFromResponse(t, response.Body)
 
 		lmTesting.AssertCatalogEquals(t, got, wantedMowers)
-		lmTesting.AssertStatus(t, response.Code, http.StatusOK)
+		lmTesting.AssertStatus(t, response.StatusCode, http.StatusOK)
 		lmTesting.AssertContentType(t, response, JSONContentType)
 	})
 }
@@ -67,19 +65,18 @@ func TestUpdateMowersAndRetrievingThemes(t *testing.T) {
 	server, _ := NewCatalogHTTPServer(repo)
 
 	for _, wantedMower := range wantedUpdatedMowers {
-		server.ServeHTTP(httptest.NewRecorder(), NewUpdateMowerRequest(wantedMower.ID, &UpdateMowerInputDTO{Name: wantedMower.Name}))
+		server.App.Test(NewUpdateMowerRequest(wantedMower.ID, &UpdateMowerInputDTO{Name: wantedMower.Name}), -1)
 	}
 
 	for _, wantedMower := range wantedUpdatedMowers {
 		testCaseName := "patch " + wantedMower.Name + " mower"
 
 		t.Run(testCaseName, func(t *testing.T) {
-			response := httptest.NewRecorder()
+			response, _ := server.App.Test(NewGetMowerRequest(wantedMower.ID), -1)
 
-			server.ServeHTTP(response, NewGetMowerRequest(wantedMower.ID))
 			got := lmTesting.GetMowerFromResponse(t, response.Body)
 
-			lmTesting.AssertStatus(t, response.Code, http.StatusOK)
+			lmTesting.AssertStatus(t, response.StatusCode, http.StatusOK)
 			lmTesting.AssertMowerEquals(t, got, *wantedMower)
 		})
 	}
@@ -92,8 +89,7 @@ func BenchmarkCreateMower(b *testing.B) {
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		name := fmt.Sprintf("M-90 %v", i)
-		response := httptest.NewRecorder()
-		server.ServeHTTP(response, NewCreateMowerRequest(&CreateMowerInputDTO{Name: name}))
+		server.App.Test(NewCreateMowerRequest(&CreateMowerInputDTO{Name: name}), -1)
 	}
 }
 
@@ -112,8 +108,7 @@ func BenchmarkGetMower(b *testing.B) {
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		response := httptest.NewRecorder()
-		server.ServeHTTP(response, NewGetMowerRequest("120"))
+		server.App.Test(NewGetMowerRequest("120"), -1)
 	}
 }
 
@@ -132,7 +127,6 @@ func BenchmarkGetCatalog(b *testing.B) {
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		response := httptest.NewRecorder()
-		server.ServeHTTP(response, NewGetCatalogRequest())
+		server.App.Test(NewGetCatalogRequest(), -1)
 	}
 }

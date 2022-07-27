@@ -2,10 +2,9 @@ package main
 
 import (
 	"jrobic/lawn-mower/catalog-service/domain"
-	httpController "jrobic/lawn-mower/catalog-service/infra/http"
+	restcontroller "jrobic/lawn-mower/catalog-service/infra/http"
 	"jrobic/lawn-mower/catalog-service/infra/repository"
 	"log"
-	"net/http"
 )
 
 func main() {
@@ -15,7 +14,7 @@ func main() {
 		{ID: "3", Name: "M-480"},
 	})
 
-	server, err := httpController.NewCatalogHTTPServer(repo)
+	server, err := restcontroller.NewCatalogHTTPServer(repo)
 
 	if err != nil {
 		log.Fatalf("problem creating player server %v", err)
@@ -23,7 +22,7 @@ func main() {
 
 	log.Println("Listen on port 5001")
 
-	if err := http.ListenAndServe(":5001", server); err != nil {
+	if err := server.App.Listen(":5001"); err != nil {
 		log.Fatalf("could not listen on port 5001 %v", err)
 	}
 
